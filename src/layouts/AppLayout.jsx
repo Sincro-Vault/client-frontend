@@ -172,24 +172,39 @@ export default function AppLayout({ children }) {
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Topbar */}
-        <header className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-[var(--border-dim)] bg-[var(--bg-deep)] z-10 flex-shrink-0">
-          <div className="flex items-center gap-3">
+        <header style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '12px 24px',
+          borderBottom: '1px solid var(--border-dim)',
+          background: 'var(--bg-deep)',
+          flexShrink: 0,
+          zIndex: 10,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden text-[var(--text-muted)] hover:text-[var(--text-prime)]"
+              className="md:hidden"
+              style={{ background: 'transparent', border: 0, color: 'var(--text-muted)', cursor: 'pointer', padding: 4 }}
             >
               <Menu size={20} />
             </button>
-            <div className="hidden md:flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs text-[var(--text-muted)] font-mono">SISTEMA SEGURO</span>
+            <div className="hidden md:flex" style={{ alignItems: 'center', gap: 8 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#34d399' }} className="animate-pulse" />
+              <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.05em' }}>
+                {t('nav.systemSecure')}
+              </span>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <SessionTimer />
             <LanguageSelector compact />
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center">
-              <User size={14} className="text-white" />
+            <div style={{
+              width: 32, height: 32, borderRadius: '50%',
+              background: 'linear-gradient(135deg, #0ea5e9, #6366f1)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+              <User size={14} color="white" />
             </div>
           </div>
         </header>

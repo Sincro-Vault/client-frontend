@@ -4,24 +4,22 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { X, Eye, EyeOff, Loader2, ShieldCheck, Clock } from 'lucide-react';
+import { X, Loader2, ShieldCheck, Clock, Database, Server, Info } from 'lucide-react';
 
 const CATEGORIES = ['api', 'database', 'certificate', 'password', 'token', 'other'];
 
 export default function EditSecretModal({ secret, onClose, onSave }) {
   const { t } = useTranslation();
-  const [showValue, setShowValue] = useState(false);
 
   const schema = z.object({
     name: z.string().min(1, t('validation.required')),
-    value: z.string().min(1, t('validation.required')),
     category: z.string().min(1, t('validation.required')),
     description: z.string().optional(),
   });
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: { name: secret.name, value: secret.value, category: secret.category, description: secret.description },
+    defaultValues: { name: secret.name, category: secret.category, description: secret.description },
   });
 
   const onSubmit = async (data) => {
@@ -67,17 +65,27 @@ export default function EditSecretModal({ secret, onClose, onSave }) {
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs text-[var(--text-muted)] mb-1.5">{t('secrets.value')} *</label>
-              <div className="relative">
-                <textarea {...register('value')} rows={3} className="w-full px-4 pr-10 py-2.5 rounded-lg text-sm font-mono resize-none"
-                  style={{ filter: showValue ? 'none' : 'blur(3px)', transition: 'filter 0.2s' }} />
-                <button type="button" onClick={() => setShowValue(!showValue)}
-                  className="absolute right-3 top-3 text-[var(--text-dim)] hover:text-[var(--text-muted)] transition-colors">
-                  {showValue ? <EyeOff size={14} /> : <Eye size={14} />}
-                </button>
+            {/* Aviso sobre el valor */}
+            <div className="flex items-start gap-2 p-3 rounded-lg bg-sky-950/20 border border-sky-700/20">
+              <Info size={13} className="text-sky-400 mt-0.5 flex-shrink-0" />
+              <div className="text-xs text-[var(--text-muted)] space-y-1">
+                <p>El valor cifrado no se puede editar directamente.</p>
+                <p className="text-[var(--text-dim)]">Para cambiarlo: elimina el secreto y créalo de nuevo (se re-fragmenta).</p>
               </div>
-              {errors.value && <p className="mt-1 text-xs text-red-400">{errors.value.message}</p>}
+            </div>
+
+            {/* Estado distribuido actual */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-2 p-2.5 rounded-lg border border-emerald-700/20 bg-emerald-950/10">
+                <Database size={11} className="text-emerald-400" />
+                <span className="text-xs text-[var(--text-muted)]">F1 cliente</span>
+                <ShieldCheck size={11} className="text-emerald-400 ml-auto" />
+              </div>
+              <div className="flex items-center gap-2 p-2.5 rounded-lg border border-emerald-700/20 bg-emerald-950/10">
+                <Server size={11} className="text-emerald-400" />
+                <span className="text-xs text-[var(--text-muted)]">F2 servidor</span>
+                <ShieldCheck size={11} className="text-emerald-400 ml-auto" />
+              </div>
             </div>
 
             <div>

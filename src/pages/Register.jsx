@@ -5,12 +5,50 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Eye, EyeOff, ShieldCheck, Lock, User, Mail, Building2, Loader2 } from 'lucide-react';
+import {
+  Eye, EyeOff, ShieldCheck, Lock, User, Mail, Building2, Loader2, ArrowRight,
+} from 'lucide-react';
 import { authService } from '../services/mockService';
 import { toast } from '../components/ui/Toast';
-import ParticleBackground from '../components/ui/ParticleBackground';
 import PasswordStrength from '../components/ui/PasswordStrength';
 import LanguageSelector from '../components/ui/LanguageSelector';
+import AuthBrandingPanel from '../components/ui/AuthBrandingPanel';
+
+const INPUT_STYLE = {
+  width: '100%',
+  paddingLeft: '40px',
+  paddingRight: '16px',
+  paddingTop: '12px',
+  paddingBottom: '12px',
+  borderRadius: '8px',
+  fontSize: '14px',
+  background: 'var(--bg-panel)',
+  border: '1px solid var(--border-dim)',
+  color: 'var(--text-prime)',
+  outline: 'none',
+  transition: 'all 0.2s',
+};
+
+const INPUT_STYLE_WITH_TOGGLE = { ...INPUT_STYLE, paddingRight: '44px' };
+
+const LABEL_STYLE = {
+  display: 'block',
+  fontSize: '11px',
+  color: 'var(--text-dim)',
+  marginBottom: '6px',
+  fontWeight: 500,
+  textTransform: 'uppercase',
+  letterSpacing: '0.1em',
+};
+
+const ICON_STYLE = {
+  position: 'absolute',
+  left: '14px',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  color: 'var(--text-dim)',
+  pointerEvents: 'none',
+};
 
 export default function Register() {
   const { t } = useTranslation();
@@ -29,174 +67,187 @@ export default function Register() {
       .regex(/[0-9]/, t('validation.weakPassword'))
       .regex(/[^A-Za-z0-9]/, t('validation.weakPassword')),
     confirmPassword: z.string(),
-  }).refine(d => d.password === d.confirmPassword, {
+  }).refine((d) => d.password === d.confirmPassword, {
     message: t('validation.passwordMismatch'),
     path: ['confirmPassword'],
   });
 
-  const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm({
+    resolver: zodResolver(schema),
+  });
   const password = watch('password', '');
 
   const onSubmit = async (data) => {
     try {
       await authService.register(data);
-      toast.success('Cuenta creada. Inicia sesión.');
+      toast.success(t('auth.loginSuccess'));
       navigate('/login');
-    } catch (e) {
+    } catch {
       toast.error(t('common.error'));
     }
   };
 
-  // Componente reutilizable de campo con icono tipo cajita
-  const Field = ({ name, label, icon: Icon, type = 'text', placeholder }) => (
+  const Field = ({ name, label, icon: Icon, type = 'text', placeholder, autoComplete }) => (
     <div>
-      <label className="block text-sm text-[var(--text-muted)] mb-2 font-medium">{label}</label>
-      <div className="relative">
-        <div className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center pointer-events-none">
-          <div className="w-8 h-8 rounded-lg bg-[var(--bg-hover)] border border-[var(--border-dim)] flex items-center justify-center ml-1">
-            <Icon size={15} className="text-[var(--electric)]" />
-          </div>
-        </div>
+      <label style={LABEL_STYLE}>{label}</label>
+      <div style={{ position: 'relative' }}>
+        <Icon size={14} style={ICON_STYLE} />
         <input
           {...register(name)}
           type={type}
           placeholder={placeholder}
-          className="w-full rounded-xl text-sm font-medium"
-          style={{ padding: '13px 16px 13px 56px' }}
+          autoComplete={autoComplete}
+          style={INPUT_STYLE}
         />
       </div>
-      {errors[name] && <p className="mt-1.5 text-xs text-red-400">{errors[name].message}</p>}
+      {errors[name] && <p style={{ marginTop: 6, fontSize: 11, color: '#f87171' }}>{errors[name].message}</p>}
     </div>
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden py-8"
-      style={{ background: 'var(--bg-void)' }}>
-      <ParticleBackground />
+    <div
+      style={{
+        display: 'flex',
+        minHeight: '100vh',
+        background: 'var(--bg-void)',
+        flexDirection: 'row',
+      }}
+      className="flex-col lg:flex-row"
+    >
+      <div style={{ flex: '1.1 1 0', minWidth: 0 }} className="hidden lg:block">
+        <AuthBrandingPanel />
+      </div>
 
-      {/* Grid de fondo */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: 'linear-gradient(var(--electric) 1px, transparent 1px), linear-gradient(90deg, var(--electric) 1px, transparent 1px)',
-        backgroundSize: '40px 40px'
-      }} />
+      <div
+        style={{
+          flex: '1 1 0',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          padding: '40px 24px',
+          minHeight: '100vh',
+        }}
+      >
+        <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 50 }}>
+          <LanguageSelector compact />
+        </div>
 
-      {/* Glow orbs */}
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full opacity-5 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, var(--electric) 0%, transparent 70%)' }} />
-      <div className="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full opacity-5 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, var(--green-safe) 0%, transparent 70%)' }} />
-
-      <div className="fixed top-5 right-5 z-50"><LanguageSelector /></div>
-
-      <div className="relative z-10 w-full max-w-lg px-6">
-
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8"
-        >
-          <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl mb-5 relative">
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-sky-500 to-emerald-500 blur-2xl opacity-50" />
-            <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-sky-500 to-emerald-500 flex items-center justify-center shadow-2xl">
-              <ShieldCheck size={42} className="text-white" />
-            </div>
+        <div className="lg:hidden" style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 }}>
+          <div style={{
+            width: 40, height: 40, borderRadius: 12,
+            background: 'linear-gradient(135deg, #0ea5e9, #10b981)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <ShieldCheck size={20} color="white" />
           </div>
-          <h1 className="text-4xl font-bold text-[var(--text-prime)] mb-2 tracking-tight">SecureSplit Vault</h1>
-          <p className="text-[var(--text-muted)] text-sm font-mono tracking-widest">
-            {t('auth.register').toUpperCase()} · ENTERPRISE
-          </p>
-        </motion.div>
+          <div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-prime)' }}>SecureSplit Vault</div>
+            <div style={{ fontSize: 9, color: 'var(--text-dim)', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.2em' }}>ENTERPRISE</div>
+          </div>
+        </div>
 
-        {/* Card */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.12 }}
-          className="glass-bright rounded-3xl p-10"
-          style={{ border: '1px solid var(--border-bright)' }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          style={{ width: '100%', maxWidth: 380 }}
         >
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div style={{ marginBottom: 24 }}>
+            <h2 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-prime)', letterSpacing: '-0.02em', margin: 0 }}>
+              {t('auth.register')}
+            </h2>
+            <p style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 6 }}>
+              Crea una cuenta y comienza a proteger tus credenciales.
+            </p>
+          </div>
 
-            <Field name="companyName" label={t('auth.companyName')} icon={Building2} placeholder="Acme Corp" />
-            <Field name="username"    label={t('auth.username')}    icon={User}      placeholder="johndoe" />
-            <Field name="email"       label={t('auth.email')}       icon={Mail}      type="email" placeholder="john@acme.com" />
+          <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <Field name="companyName" label={t('auth.companyName')} icon={Building2} placeholder="Aldeamo S.A.S." autoComplete="organization" />
+            <Field name="username" label={t('auth.username')} icon={User} placeholder="jperez" autoComplete="username" />
+            <Field name="email" label={t('auth.email')} icon={Mail} type="email" placeholder="j.perez@aldeamo.com" autoComplete="email" />
 
-            {/* Password con toggle */}
+            {/* Password */}
             <div>
-              <label className="block text-sm text-[var(--text-muted)] mb-2 font-medium">{t('auth.password')}</label>
-              <div className="relative">
-                <div className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center pointer-events-none">
-                  <div className="w-8 h-8 rounded-lg bg-[var(--bg-hover)] border border-[var(--border-dim)] flex items-center justify-center ml-1">
-                    <Lock size={15} className="text-[var(--electric)]" />
-                  </div>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <label style={{ ...LABEL_STYLE, marginBottom: 0 }}>{t('auth.password')}</label>
+                <span style={{ fontSize: 9, color: 'var(--text-dim)', fontFamily: 'JetBrains Mono, monospace' }}>PBKDF2 · 100k</span>
+              </div>
+              <div style={{ position: 'relative' }}>
+                <Lock size={14} style={ICON_STYLE} />
                 <input
                   {...register('password')}
                   type={showPass ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="w-full rounded-xl text-sm font-medium"
-                  style={{ padding: '13px 48px 13px 56px' }}
+                  autoComplete="new-password"
+                  style={INPUT_STYLE_WITH_TOGGLE}
                 />
-                <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-dim)] hover:text-[var(--text-muted)] transition-colors p-1">
-                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                <button type="button" onClick={() => setShowPass(!showPass)} tabIndex={-1}
+                  style={{
+                    position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+                    background: 'transparent', border: 0, padding: 4, color: 'var(--text-dim)', cursor: 'pointer',
+                  }}>
+                  {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
-              {errors.password && <p className="mt-1.5 text-xs text-red-400">{errors.password.message}</p>}
+              {errors.password && <p style={{ marginTop: 6, fontSize: 11, color: '#f87171' }}>{errors.password.message}</p>}
               <PasswordStrength password={password} />
             </div>
 
-            {/* Confirm password con toggle */}
+            {/* Confirm */}
             <div>
-              <label className="block text-sm text-[var(--text-muted)] mb-2 font-medium">{t('auth.confirmPassword')}</label>
-              <div className="relative">
-                <div className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center pointer-events-none">
-                  <div className="w-8 h-8 rounded-lg bg-[var(--bg-hover)] border border-[var(--border-dim)] flex items-center justify-center ml-1">
-                    <Lock size={15} className="text-[var(--electric)]" />
-                  </div>
-                </div>
+              <label style={LABEL_STYLE}>{t('auth.confirmPassword')}</label>
+              <div style={{ position: 'relative' }}>
+                <Lock size={14} style={ICON_STYLE} />
                 <input
                   {...register('confirmPassword')}
                   type={showConfirm ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="w-full rounded-xl text-sm font-medium"
-                  style={{ padding: '13px 48px 13px 56px' }}
+                  autoComplete="new-password"
+                  style={INPUT_STYLE_WITH_TOGGLE}
                 />
-                <button type="button" onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-dim)] hover:text-[var(--text-muted)] transition-colors p-1">
-                  {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                <button type="button" onClick={() => setShowConfirm(!showConfirm)} tabIndex={-1}
+                  style={{
+                    position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+                    background: 'transparent', border: 0, padding: 4, color: 'var(--text-dim)', cursor: 'pointer',
+                  }}>
+                  {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
-              {errors.confirmPassword && <p className="mt-1.5 text-xs text-red-400">{errors.confirmPassword.message}</p>}
+              {errors.confirmPassword && <p style={{ marginTop: 6, fontSize: 11, color: '#f87171' }}>{errors.confirmPassword.message}</p>}
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-xl bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-white font-semibold text-base transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 glow-electric mt-2"
-              style={{ padding: '15px' }}
+              style={{
+                width: '100%', padding: '12px', marginTop: 4,
+                borderRadius: 8, border: 0,
+                background: 'linear-gradient(90deg, #0284c7, #0ea5e9)',
+                color: 'white', fontWeight: 600, fontSize: 14,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                opacity: isSubmitting ? 0.6 : 1,
+                boxShadow: '0 10px 15px -3px rgba(2,132,199,0.3)',
+                transition: 'all 0.2s',
+              }}
             >
-              {isSubmitting
-                ? <><Loader2 size={18} className="animate-spin" />{t('common.loading')}</>
-                : t('auth.register')
-              }
+              {isSubmitting ? (
+                <><Loader2 size={16} className="animate-spin" />{t('common.loading')}</>
+              ) : (
+                <>{t('auth.register')}<ArrowRight size={15} /></>
+              )}
             </button>
           </form>
 
-          <p className="text-center text-sm text-[var(--text-dim)] mt-7">
+          <p style={{ marginTop: 20, textAlign: 'center', fontSize: 13, color: 'var(--text-dim)' }}>
             {t('auth.hasAccount')}{' '}
-            <Link to="/login" className="text-[var(--electric)] hover:text-[var(--electric-bright)] transition-colors font-medium">
-              {t('auth.login')}
+            <Link to="/login" style={{ color: 'var(--electric)', textDecoration: 'none', fontWeight: 500 }}>
+              {t('auth.login')} →
             </Link>
           </p>
         </motion.div>
-
-        <p className="text-center text-xs text-[var(--text-dim)] mt-5 font-mono tracking-wider">
-          JWT · AES-256 · TLS 1.3 · ZERO TRUST
-        </p>
       </div>
     </div>
   );

@@ -38,18 +38,19 @@ const StatCard = ({ icon: Icon, label, value, sub, color = 'electric', index }) 
 };
 
 const SystemStatus = () => {
+  const { t } = useTranslation();
   const items = [
-    { label: 'Encryption Engine', status: 'online', value: 'AES-256-GCM' },
-    { label: 'Key Derivation', status: 'online', value: 'PBKDF2' },
-    { label: 'TLS Layer', status: 'online', value: 'TLS 1.3' },
-    { label: 'Vault Core', status: 'online', value: 'v2.4.1' },
+    { label: t('dashboard.components.encryptionEngine'), status: 'online', value: 'AES-256-GCM' },
+    { label: t('dashboard.components.keyDerivation'), status: 'online', value: 'PBKDF2' },
+    { label: t('dashboard.components.tlsLayer'), status: 'online', value: 'TLS 1.3' },
+    { label: t('dashboard.components.vaultCore'), status: 'online', value: 'v2.4.1' },
   ];
 
   return (
     <div className="glass rounded-xl p-5 border border-[var(--border-dim)]">
       <div className="flex items-center gap-2 mb-4">
         <Cpu size={15} className="text-[var(--electric)]" />
-        <h3 className="text-sm font-semibold text-[var(--text-prime)]">Sistema</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-prime)]">{t('dashboard.system')}</h3>
       </div>
       <div className="space-y-3">
         {items.map((item, i) => (
@@ -68,6 +69,7 @@ const SystemStatus = () => {
 };
 
 const ActivityFeed = () => {
+  const { t } = useTranslation();
   const events = [
     { action: 'SECRET_READ', name: 'AWS_ACCESS_KEY', time: '2 min ago', icon: KeyRound, color: 'text-sky-400' },
     { action: 'SECRET_CREATED', name: 'REDIS_PASSWORD', time: '1 hr ago', icon: ShieldCheck, color: 'text-emerald-400' },
@@ -79,7 +81,7 @@ const ActivityFeed = () => {
     <div className="glass rounded-xl p-5 border border-[var(--border-dim)]">
       <div className="flex items-center gap-2 mb-4">
         <Activity size={15} className="text-[var(--electric)]" />
-        <h3 className="text-sm font-semibold text-[var(--text-prime)]">Actividad Reciente</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-prime)]">{t('dashboard.recentActivity')}</h3>
       </div>
       <div className="space-y-3">
         {events.map((e, i) => (
@@ -101,7 +103,7 @@ const ActivityFeed = () => {
 };
 
 export default function Dashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuthStore();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -109,6 +111,9 @@ export default function Dashboard() {
   useEffect(() => {
     secretsService.getStats().then(setStats).finally(() => setLoading(false));
   }, []);
+
+  const localeMap = { es: 'es-ES', en: 'en-US', fr: 'fr-FR' };
+  const locale = localeMap[i18n.language] || 'es-ES';
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -118,7 +123,7 @@ export default function Dashboard() {
           {t('dashboard.welcome')}, <span className="text-[var(--electric)]">{user?.username}</span>
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1 font-mono">
-          {new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase()}
+          {new Date().toLocaleDateString(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase()}
         </p>
       </motion.div>
 
@@ -129,10 +134,10 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          <StatCard icon={KeyRound} label={t('dashboard.totalSecrets')} value={stats?.total} sub="en el vault" color="electric" index={0} />
-          <StatCard icon={ShieldCheck} label={t('dashboard.activeSecrets')} value={stats?.active} sub="protegidos" color="green" index={1} />
-          <StatCard icon={Clock} label={t('dashboard.lastAccess')} value="Ahora" sub="sesión activa" color="amber" index={2} />
-          <StatCard icon={TrendingUp} label={t('dashboard.securityStatus')} value={t('dashboard.secure')} sub="sin amenazas" color="green" index={3} />
+          <StatCard icon={KeyRound} label={t('dashboard.totalSecrets')} value={stats?.total} sub={t('dashboard.inVault')} color="electric" index={0} />
+          <StatCard icon={ShieldCheck} label={t('dashboard.activeSecrets')} value={stats?.active} sub={t('dashboard.protected')} color="green" index={1} />
+          <StatCard icon={Clock} label={t('dashboard.lastAccess')} value={t('common.now')} sub={t('dashboard.activeSession')} color="amber" index={2} />
+          <StatCard icon={TrendingUp} label={t('dashboard.securityStatus')} value={t('dashboard.secure')} sub={t('dashboard.noThreats')} color="green" index={3} />
         </div>
       )}
 
@@ -148,7 +153,7 @@ export default function Dashboard() {
           className="glass rounded-xl p-5 border border-[var(--border-dim)]">
           <div className="flex items-center gap-2 mb-4">
             <Database size={15} className="text-[var(--electric)]" />
-            <h3 className="text-sm font-semibold text-[var(--text-prime)]">Distribución por Categoría</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-prime)]">{t('dashboard.categoryBreakdown')}</h3>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {Object.entries(stats.categories).map(([cat, count], i) => (

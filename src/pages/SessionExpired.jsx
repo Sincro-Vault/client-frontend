@@ -26,7 +26,7 @@ export default function SessionExpired() {
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <h1 className="text-2xl font-bold text-[var(--text-prime)]">{t('auth.sessionExpired')}</h1>
-          <p className="text-sm text-[var(--text-muted)] mt-2">Tu token JWT ha expirado. Por seguridad, debes iniciar sesión nuevamente.</p>
+          <p className="text-sm text-[var(--text-muted)] mt-2">{t('auth.sessionExpiredDesc')}</p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>

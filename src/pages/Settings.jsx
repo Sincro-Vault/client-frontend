@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Settings as SettingsIcon, User, Shield, Bell, Palette, Key, Save, Check } from 'lucide-react';
+import { User, Shield, Bell, Palette, Key, Save, Check } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import LanguageSelector from '../components/ui/LanguageSelector';
 import { toast } from '../components/ui/Toast';
@@ -48,7 +48,7 @@ export default function Settings() {
 
   const handleSave = () => {
     setSaved(true);
-    toast.success('Configuración guardada');
+    toast.success(t('settings.saved'));
     setTimeout(() => setSaved(false), 2000);
   };
 
@@ -56,10 +56,10 @@ export default function Settings() {
     <div className="max-w-2xl space-y-5">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <h1 className="text-2xl font-bold text-[var(--text-prime)]">{t('nav.settings')}</h1>
-        <p className="text-xs text-[var(--text-dim)] font-mono mt-0.5">PREFERENCIAS DEL SISTEMA</p>
+        <p className="text-xs text-[var(--text-dim)] font-mono mt-0.5">{t('settings.subtitle')}</p>
       </motion.div>
 
-      <Section icon={User} title="Perfil" index={0}>
+      <Section icon={User} title={t('settings.profile')} index={0}>
         <div className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-xl font-bold text-white">
@@ -73,57 +73,57 @@ export default function Settings() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-[var(--text-dim)] mb-1.5">Usuario</label>
+              <label className="block text-xs text-[var(--text-dim)] mb-1.5">{t('auth.username')}</label>
               <input defaultValue={user?.username} className="w-full px-3 py-2 rounded-lg text-sm" />
             </div>
             <div>
-              <label className="block text-xs text-[var(--text-dim)] mb-1.5">Email</label>
+              <label className="block text-xs text-[var(--text-dim)] mb-1.5">{t('auth.email')}</label>
               <input defaultValue={user?.email} className="w-full px-3 py-2 rounded-lg text-sm" />
             </div>
           </div>
         </div>
       </Section>
 
-      <Section icon={Palette} title="Idioma y Región" index={1}>
+      <Section icon={Palette} title={t('settings.languageRegion')} index={1}>
         <div className="flex items-center justify-between py-2">
           <div>
-            <p className="text-sm text-[var(--text-prime)]">Idioma de la interfaz</p>
-            <p className="text-xs text-[var(--text-dim)] mt-0.5">Español, English, Français</p>
+            <p className="text-sm text-[var(--text-prime)]">{t('settings.interfaceLanguage')}</p>
+            <p className="text-xs text-[var(--text-dim)] mt-0.5">{t('settings.interfaceLanguageDesc')}</p>
           </div>
           <LanguageSelector />
         </div>
       </Section>
 
-      <Section icon={Shield} title="Seguridad" index={2}>
-        <Toggle label="Auto-logout al cerrar pestaña" desc="Cierra sesión automáticamente" defaultChecked />
-        <Toggle label="Blur automático de secretos" desc="Oculta valores después de 10s" defaultChecked />
-        <Toggle label="Autenticación de dos factores" desc="2FA por TOTP (próximamente)" />
-        <Toggle label="Notificar accesos sospechosos" desc="Alertas por email" defaultChecked />
+      <Section icon={Shield} title={t('settings.security')} index={2}>
+        <Toggle label={t('settings.autoLogout')} desc={t('settings.autoLogoutDesc')} defaultChecked />
+        <Toggle label={t('settings.autoBlur')} desc={t('settings.autoBlurDesc')} defaultChecked />
+        <Toggle label={t('settings.twoFactor')} desc={t('settings.twoFactorDesc')} />
+        <Toggle label={t('settings.suspiciousAccess')} desc={t('settings.suspiciousAccessDesc')} defaultChecked />
       </Section>
 
-      <Section icon={Bell} title="Notificaciones" index={3}>
-        <Toggle label="Notificaciones de sesión" desc="Avisos antes de que expire la sesión" defaultChecked />
-        <Toggle label="Alertas de seguridad" defaultChecked />
-        <Toggle label="Resumen semanal" desc="Email con estadísticas de uso" />
+      <Section icon={Bell} title={t('settings.notifications')} index={3}>
+        <Toggle label={t('settings.sessionNotifications')} desc={t('settings.sessionNotificationsDesc')} defaultChecked />
+        <Toggle label={t('settings.securityAlerts')} defaultChecked />
+        <Toggle label={t('settings.weeklyDigest')} desc={t('settings.weeklyDigestDesc')} />
       </Section>
 
-      <Section icon={Key} title="API & Integraciones" index={4}>
+      <Section icon={Key} title={t('settings.apiIntegrations')} index={4}>
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-panel)] border border-[var(--border-dim)]">
             <div>
-              <p className="text-sm text-[var(--text-muted)]">API Key</p>
+              <p className="text-sm text-[var(--text-muted)]">{t('settings.apiKey')}</p>
               <p className="text-xs font-mono text-[var(--text-dim)] mt-0.5">ssv_••••••••••••••••3f9a</p>
             </div>
-            <button className="text-xs text-[var(--electric)] hover:text-[var(--electric-bright)] transition-colors font-medium">Regenerar</button>
+            <button className="text-xs text-[var(--electric)] hover:text-[var(--electric-bright)] transition-colors font-medium">{t('common.regenerate')}</button>
           </div>
-          <p className="text-xs text-[var(--text-dim)]">Endpoint: <span className="font-mono text-[var(--text-muted)]">https://api.securesplit.io/v1</span></p>
+          <p className="text-xs text-[var(--text-dim)]">{t('settings.endpoint')}: <span className="font-mono text-[var(--text-muted)]">https://api.securesplit.io/v1</span></p>
         </div>
       </Section>
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
         <button onClick={handleSave}
           className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-white font-medium text-sm transition-all glow-electric">
-          {saved ? <><Check size={15} />Guardado</> : <><Save size={15} />{t('common.save')}</>}
+          {saved ? <><Check size={15} />{t('common.saved')}</> : <><Save size={15} />{t('common.save')}</>}
         </button>
       </motion.div>
     </div>

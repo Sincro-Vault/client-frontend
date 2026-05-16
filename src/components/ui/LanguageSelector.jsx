@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Globe, ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from './Toast';
 
 const LANGS = [
   { code: 'es', label: 'Español', flag: '🇪🇸' },
@@ -26,10 +27,16 @@ export default function LanguageSelector({ compact = false }) {
     return () => document.removeEventListener('mousedown', handler);
   }, [open]);
 
-  const change = (code) => {
-    i18n.changeLanguage(code);
+  const change = async (code) => {
+    if (code === i18n.language) {
+      setOpen(false);
+      return;
+    }
+    await i18n.changeLanguage(code);
     localStorage.setItem('ssv_lang', code);
     setOpen(false);
+    // Notificación en el idioma recién seleccionado
+    toast.success(i18n.t('settings.languageChanged', { lng: code }));
   };
 
   return (
