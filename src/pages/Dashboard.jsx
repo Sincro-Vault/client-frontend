@@ -26,7 +26,7 @@ const StatCard = ({ icon: Icon, label, value, sub, color='electric', index }) =>
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
         <div>
           <p style={{ fontSize:10, color:'var(--text-dim)', fontWeight:600, textTransform:'uppercase',
-            letterSpacing:'0.14em', marginBottom:10, fontFamily:'JetBrains Mono,monospace' }}>{label}</p>
+            letterSpacing:'0.14em', marginBottom:10, fontFamily:'inherit' }}>{label}</p>
           <p style={{ fontSize:32, fontWeight:800, color:c.text, lineHeight:1, letterSpacing:'-0.02em' }}>{value}</p>
           {sub && <p style={{ fontSize:11.5, color:'var(--text-muted)', marginTop:6 }}>{sub}</p>}
         </div>
@@ -58,7 +58,7 @@ const PanelHeader = ({ icon: Icon, title, badge }) => (
     {badge && <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:5,
       padding:'2px 8px', borderRadius:999, background:'rgba(52,211,153,0.1)', border:'1px solid rgba(52,211,153,0.2)' }}>
       <span style={{ width:6, height:6, borderRadius:'50%', background:'#34d399', display:'inline-block' }} className="animate-pulse" />
-      <span style={{ fontSize:9, color:'#34d399', fontFamily:'JetBrains Mono,monospace', letterSpacing:'0.1em' }}>{badge}</span>
+      <span style={{ fontSize:9, color:'#34d399', fontFamily:'inherit', letterSpacing:'0.1em' }}>{badge}</span>
     </div>}
   </div>
 );
@@ -83,7 +83,7 @@ const SystemStatus = () => {
                 <span style={{ width:6, height:6, borderRadius:'50%', background:'#34d399', display:'inline-block', flexShrink:0 }} />
                 <span style={{ fontSize:12, color:'var(--text-muted)' }}>{item.label}</span>
               </div>
-              <span style={{ fontSize:11, color:'rgba(56,189,248,0.7)', fontFamily:'JetBrains Mono,monospace' }}>{item.value}</span>
+              <span style={{ fontSize:11, color:'rgba(56,189,248,0.7)', fontFamily:'inherit' }}>{item.value}</span>
             </div>
             <div style={{ height:3, borderRadius:99, background:'rgba(255,255,255,0.05)' }}>
               <motion.div initial={{ width:0 }} animate={{ width:`${item.pct}%` }}
@@ -120,10 +120,10 @@ const ActivityFeed = () => {
               <e.icon size={13} style={{ color:e.color }} />
             </div>
             <div style={{ flex:1, minWidth:0 }}>
-              <p style={{ fontSize:11, fontFamily:'JetBrains Mono,monospace', color:e.color, margin:0, letterSpacing:'0.04em' }}>{e.action}</p>
+              <p style={{ fontSize:11, fontFamily:'inherit', color:e.color, margin:0, letterSpacing:'0.04em' }}>{e.action}</p>
               <p style={{ fontSize:12, color:'var(--text-muted)', margin:'2px 0 0', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{e.name}</p>
             </div>
-            <span style={{ fontSize:10.5, color:'var(--text-dim)', flexShrink:0, fontFamily:'JetBrains Mono,monospace' }}>{e.time}</span>
+            <span style={{ fontSize:10.5, color:'var(--text-dim)', flexShrink:0, fontFamily:'inherit' }}>{e.time}</span>
           </motion.div>
         ))}
       </div>
@@ -158,14 +158,14 @@ export default function Dashboard() {
               </span>
             </h1>
             <p style={{ fontSize:11.5, color:'var(--text-dim)', marginTop:6,
-              fontFamily:'JetBrains Mono,monospace', letterSpacing:'0.08em' }}>
+              fontFamily:'inherit', letterSpacing:'0.08em' }}>
               {new Date().toLocaleDateString(locale, { weekday:'long', year:'numeric', month:'long', day:'numeric' }).toUpperCase()}
             </p>
           </div>
           <div style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 14px', borderRadius:10,
             background:'rgba(52,211,153,0.07)', border:'1px solid rgba(52,211,153,0.18)' }}>
             <Zap size={13} style={{ color:'#34d399' }} />
-            <span style={{ fontSize:11, color:'#34d399', fontFamily:'JetBrains Mono,monospace', letterSpacing:'0.08em' }}>VAULT ONLINE</span>
+            <span style={{ fontSize:11, color:'#34d399', fontFamily:'inherit', letterSpacing:'0.08em' }}>VAULT ONLINE</span>
           </div>
         </div>
       </motion.div>
@@ -203,7 +203,7 @@ export default function Dashboard() {
                   background:'rgba(255,255,255,0.03)', border:'1px solid rgba(56,189,248,0.1)' }}>
                 <div style={{ fontSize:24, fontWeight:800, color:'#38bdf8', letterSpacing:'-0.02em' }}>{count}</div>
                 <div style={{ fontSize:9.5, color:'var(--text-dim)', marginTop:6,
-                  fontFamily:'JetBrains Mono,monospace', textTransform:'uppercase', letterSpacing:'0.1em' }}>{cat}</div>
+                  fontFamily:'inherit', textTransform:'uppercase', letterSpacing:'0.1em' }}>{cat}</div>
               </motion.div>
             ))}
           </div>

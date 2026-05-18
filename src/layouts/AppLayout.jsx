@@ -32,13 +32,13 @@ export default function AppLayout({ children }) {
     navigate('/login');
   };
 
-  const SidebarContent = () => (
+  const renderSidebarContent = () => (
     <div className="flex flex-col h-full">
 
       {/* Logo */}
       <div className={`flex items-center gap-4 px-5 py-7 border-b border-[var(--border-dim)]/60 ${collapsed ? 'justify-center px-3' : ''}`}>
         <div className="relative w-9 h-9 flex-shrink-0">
-          <div className="absolute inset-0 bg-sky-400 rounded-xl opacity-25 blur-md animate-pulse" />
+          <div className="absolute inset-0 bg-sky-400 rounded-xl opacity-25 blur-md" />
           <div className="relative w-9 h-9 bg-gradient-to-br from-sky-400 via-cyan-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/30">
             <ShieldCheck size={17} className="text-white drop-shadow" />
           </div>
@@ -57,18 +57,18 @@ export default function AppLayout({ children }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-5 space-y-1.5 overflow-y-auto">
+      <nav className="flex-1 py-5 overflow-y-auto">
         {NAV_ITEMS.map(({ key, icon: Icon, path }) => (
           <NavLink
             key={key}
             to={path}
             onClick={() => setMobileOpen(false)}
             className={({ isActive }) =>
-              `flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${
+              `flex items-center gap-4 px-4 py-3.5 mx-3 my-2 rounded-xl transition-all duration-200 group relative overflow-hidden ${
                 isActive
                   ? 'bg-gradient-to-r from-sky-500/15 via-cyan-500/10 to-transparent text-sky-300 border border-sky-500/25 shadow-sm shadow-sky-500/10'
                   : 'text-[var(--text-muted)] hover:bg-white/5 hover:text-[var(--text-prime)] border border-transparent'
-              } ${collapsed ? 'justify-center px-0' : ''}`
+              } ${collapsed ? 'justify-center px-0 mx-2' : ''}`
             }
           >
             {({ isActive }) => (
@@ -169,7 +169,7 @@ export default function AppLayout({ children }) {
         >
           <ChevronRight size={13} className={`transition-transform duration-200 ${collapsed ? '' : 'rotate-180'}`} />
         </button>
-        <SidebarContent />
+        {renderSidebarContent()}
       </motion.aside>
 
       {/* Mobile Sidebar */}
@@ -186,7 +186,7 @@ export default function AppLayout({ children }) {
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className="fixed left-0 top-0 h-full w-60 bg-[var(--bg-deep)] border-r border-[var(--border-dim)] z-40 md:hidden"
             >
-              <SidebarContent />
+              {renderSidebarContent()}
             </motion.aside>
           </>
         )}
@@ -196,7 +196,7 @@ export default function AppLayout({ children }) {
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Topbar */}
-        <header className="flex items-center justify-between px-6 py-3.5 flex-shrink-0 z-10 relative"
+        <header className="flex items-center justify-between px-6 py-3.5 flex-shrink-0 z-50 relative"
           style={{
             borderBottom: '1px solid rgba(var(--border-dim-rgb, 255,255,255), 0.06)',
             background: 'linear-gradient(90deg, var(--bg-deep) 0%, color-mix(in srgb, var(--bg-deep) 97%, #0ea5e9 3%) 100%)',
